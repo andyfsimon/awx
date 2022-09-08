@@ -1,5 +1,8 @@
 ---
-- name: Upgrade all packages
-  ansible.builtin.yum:
-    name: '*'
-    state: latest
+- hosts: all
+  gather_facts: true
+  tasks:
+   - name: Upgrade all packages
+     ansible.builtin.yum:
+       name: '*'
+       state: latest
