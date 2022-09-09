@@ -2,7 +2,7 @@
 - hosts: all
   gather_facts: true
   tasks:
-   - name: Upgrade all packages
+   - name: Update all repositories
      ansible.builtin.yum:
        update_cache: true
        
