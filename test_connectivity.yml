@@ -1,6 +1,5 @@
 ---
-- name: Test Ansible connectivity
-  gather_facts: yes
-  hosts: all
+- hosts: all
+  gather_facts: true
   tasks:
     - debug: var=hostvars[inventory_hostname]['ansible_env'].SSH_CONNECTION.split(' ')[2]
