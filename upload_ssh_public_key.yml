@@ -1,8 +1,9 @@
 ---
 - hosts: all
   gather_facts: true
-    tasks:
-     - authorized_key:
-       user: ansible
-       state: present
-       key: https://github.com/ansible.keys
+  tasks:
+    - authorized_key:
+      user: ansible
+      state: present
+      key: https://github.com/ansible.keys
+
