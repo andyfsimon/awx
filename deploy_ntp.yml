@@ -1,0 +1,46 @@
+---
+- hosts: all
+  tasks:
+    - name: Gather package facts
+      package_facts:
+        manager: auto
+
+    - name: Remove chrony if it is installed
+      package:
+        name: chrony
+        state: absent
+      when: '"chrony" in ansible_facts.packages'
+      register: chrony_removed
+
+    - name: Install systemd-timesyncd if not present
+      package:
+        name: systemd-timesyncd
+        state: present
+      when: '"systemd-timesyncd" not in ansible_facts.packages'
+      ignore_errors: yes
+    
+    - name: Check if timesyncd.conf file exists
+      stat: 
+        path: /etc/systemd/timesyncd.conf
+      register: timesyncd_conf
+
+    - name: Add NTP server from DMZ
+      lineinfile:
+        path: /etc/systemd/timesyncd.conf
+        state: present
+        regexp: '^#NTP='
+        line: 'NTP=10.99.0.1'
+      when: timesyncd_conf.stat.exists == true
+    
+    - name: Stop chrony service 
+      systemd:
+        state: stopped
+        name: chrony
+      when: chrony_removed.skipped|bool != true
+
+    - name: Restart timesyncd service 
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        name: systemd-timesyncd 
+      when: timesyncd_conf.stat.exists == true
