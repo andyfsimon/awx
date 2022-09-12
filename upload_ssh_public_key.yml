@@ -1,7 +1,17 @@
 ---
 - hosts: all
   gather_facts: true
+  vars:
+    created_username: ansible
   tasks:
+    - name: Create a new regular user with sudo privileges
+      user:
+        name: "{{ created_username }}"
+        state: present
+        groups: sudo
+        append: true
+        create_home: true
+        
     - name: Set authorized key took from url
       authorized_key:
         user: ansible
