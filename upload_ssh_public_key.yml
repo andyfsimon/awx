@@ -4,12 +4,10 @@
   vars:
     created_username: ansible
   tasks:
-    - name: Create a new regular user with sudo privileges
+    - name: Create a new regular user
       user:
         name: "{{ created_username }}"
         state: present
-        groups: wheel
-        append: true
         create_home: true
         
     - name: Set authorized key took from url
