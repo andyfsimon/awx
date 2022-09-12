@@ -1,11 +1,22 @@
 ---
 - hosts: all
-  become: true
   vars:
     created_username: ansible
 
   tasks:
-    - name: Setup passwordless sudo
+    - name: Create a new regular
+      user:
+        name: "{{ created_username }}"
+        state: present
+        create_home: true
+
+    - name: Set authorized key for ansible user
+      authorized_key:
+        user: "{{ created_username }}"
+        state: present
+        key: "{{ lookup('file', 'ansible.pub') }}"
+        
+    - name: Setup passwordless sudo for ansible user
       lineinfile:
         path: /etc/sudoers
         state: present
@@ -13,25 +24,10 @@
         line: 'ansible ALL=(ALL) NOPASSWD: ALL'
         validate: '/usr/sbin/visudo -cf %s'
 
-    - name: Create a new regular user with sudo privileges
-      user:
-        name: "{{ created_username }}"
-        state: present
-        groups: sudo
-        append: true
-        create_home: true
-
-    - name: Set authorized key for remote user
-      #ansible.posix.authorized_key:
-      authorized_key:
-        user: "{{ created_username }}"
-        state: present
-        key: "{{ lookup('file', id_rsa.pub') }}"
-
     - name: Disable password authentication for root
       lineinfile:
         path: /etc/ssh/sshd_config
         state: present
         regexp: '^#?PermitRootLogin'
         line: 'PermitRootLogin prohibit-password'
-#	when: ansible_host non e' proxmox
+        #	when: ansible_host non e' proxmox
