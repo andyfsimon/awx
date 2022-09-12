@@ -8,7 +8,7 @@
       user:
         name: "{{ created_username }}"
         state: present
-        groups: sudo
+        groups: wheel
         append: true
         create_home: true
         
