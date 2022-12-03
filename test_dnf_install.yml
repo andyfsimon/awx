@@ -1,0 +1,13 @@
+---
+- hosts: all
+  gather_facts: true
+  tasks:
+   - name: test install
+     dnf:
+       name: 'mc'
+       state: present
+     register: result
+     
+   - name: print data
+     debug:
+       msg: This is the result: {{ result }}
