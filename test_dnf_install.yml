@@ -10,4 +10,4 @@
      
    - name: print data
      debug:
-       msg: This is the result: {{ result }}
+       msg: "This is the result: {{ result }}"
